@@ -18,6 +18,81 @@ namespace TestApplication.Test.Services
 		private readonly InterestCalcService interestCalcService;
 
 		// Data Factory
+		#region Case 1 Parameter
+		private readonly List<PersonDto> people_1 = new List<PersonDto>
+			{
+				new PersonDto
+				{
+					Id = 1,
+					CreditStatements = new List<CreditStatementsDto>
+					{
+						new CreditStatementsDto
+						{
+							AmountsOwedVisa = new List<decimal> { 100 },
+							AmountsOwedMC = new List<decimal> { 100 },
+							AmountsOwedDiscover = new List<decimal> { 100 }
+						}
+					}
+				}
+			};
+		#endregion End Case 1 Parameter
+
+		#region Case 2 Parameter
+		private readonly List<PersonDto> people_2 = new List<PersonDto>
+			{
+				new PersonDto
+				{
+					Id = 2,
+					CreditStatements = new List<CreditStatementsDto>
+					{
+						new CreditStatementsDto
+						{
+							AmountsOwedVisa = new List<decimal> { 100 },
+							AmountsOwedMC = new List<decimal> { 0 },
+							AmountsOwedDiscover = new List<decimal> { 100 }
+						},
+						new CreditStatementsDto
+						{
+							AmountsOwedVisa = new List<decimal> { 0 },
+							AmountsOwedMC = new List<decimal> { 100 },
+							AmountsOwedDiscover = new List<decimal> { 0 }
+						}
+					}
+				}
+			};
+		#endregion End Case 2 Parameter
+
+		#region Case 3 Parameter
+		private readonly List<PersonDto> people_3 = new List<PersonDto>
+			{
+				new PersonDto
+				{
+					Id = 3,
+					CreditStatements = new List<CreditStatementsDto>
+					{
+						new CreditStatementsDto
+						{
+							AmountsOwedVisa = new List<decimal> { 100 },
+							AmountsOwedMC = new List<decimal> { 100 },
+							AmountsOwedDiscover = new List<decimal> { 100 }
+						}
+					}
+				},
+				new PersonDto
+				{
+					Id = 4,
+					CreditStatements = new List<CreditStatementsDto>
+					{
+						new CreditStatementsDto
+						{
+							AmountsOwedVisa = new List<decimal> { 100 },
+							AmountsOwedMC = new List<decimal> { 100 },
+							AmountsOwedDiscover = new List<decimal> { 0 }
+						}
+					}
+				}
+			};
+		#endregion End Case 3 Parameter
 
 		public InterestCalcServiceTest()
 		{
@@ -29,32 +104,13 @@ namespace TestApplication.Test.Services
 		public void GetInterestCalcService_Returns_Case1Results()
 		{
 			// ARRANGE
-			#region Case 1 Parameter
-			IList<PersonDto> people = new List<PersonDto>
-			{
-				new PersonDto
-				{
-					Id = 1,
-					Wallets = new List<WalletsDto>
-					{
-						new WalletsDto
-						{
-							AmountsOwedVisa = new List<decimal> { 100 },
-							AmountsOwedMC = new List<decimal> { 100 },
-							AmountsOwedDiscover = new List<decimal> { 100 }
-						}
-					}
-				}
-			};
-			#endregion End Case 1 Parameter
-
 			#region Expected Data
 			IList<InterestSummaryDto> expectedCase1 = new List<InterestSummaryDto>
 			{
 				new InterestSummaryDto
 				{
 					PersonId = 1,
-					Wallets = new List<CardInterestsDto>
+					IndividualInterestDue = new List<CardInterestsDto>
 					{
 						new CardInterestsDto
 						{
@@ -63,14 +119,23 @@ namespace TestApplication.Test.Services
 							DiscoverInterest = new List<decimal> { 1 }
 						}
 					},
-					TotalDueWithInterest = 316,
-					TotalInterestDue = 16
+					TotalDuePlusInterest = 316,
+					TotalInterestDue = 16,
+					OriginalStatementValues = new List<CreditStatementsDto>
+					{
+						new CreditStatementsDto
+						{
+							AmountsOwedVisa = new List<decimal> { 100 },
+							AmountsOwedMC = new List<decimal> { 100 },
+							AmountsOwedDiscover = new List<decimal> { 100 }
+						}
+					}
 				}
 			};
 			#endregion End Expected Data
 
 			// ACT
-			var actual = interestCalcService.GetCardInterests(people);
+			var actual = interestCalcService.GetCardInterests(people_1);
 
 			// ASSERT
 			actual.Should().BeEquivalentTo(expectedCase1);
@@ -80,38 +145,13 @@ namespace TestApplication.Test.Services
 		public void GetInterestCalcService_Returns_Case2Results()
 		{
 			// ARRANGE
-			#region Case 2 Parameter
-			IList<PersonDto> people = new List<PersonDto>
-			{
-				new PersonDto
-				{
-					Id = 2,
-					Wallets = new List<WalletsDto>
-					{
-						new WalletsDto
-						{
-							AmountsOwedVisa = new List<decimal> { 100 },
-							AmountsOwedMC = new List<decimal> { 0 },
-							AmountsOwedDiscover = new List<decimal> { 100 }
-						},
-						new WalletsDto
-						{
-							AmountsOwedVisa = new List<decimal> { 0 },
-							AmountsOwedMC = new List<decimal> { 100 },
-							AmountsOwedDiscover = new List<decimal> { 0 }
-						}
-					}
-				}
-			};
-			#endregion End Case 2 Parameter
-
 			#region Expected Data
 			IList<InterestSummaryDto> expectedCase2 = new List<InterestSummaryDto>
 			{
 				new InterestSummaryDto
 				{
 					PersonId = 2,
-					Wallets = new List<CardInterestsDto>
+					IndividualInterestDue = new List<CardInterestsDto>
 					{
 						new CardInterestsDto
 						{
@@ -126,14 +166,29 @@ namespace TestApplication.Test.Services
 							DiscoverInterest = new List<decimal> { 0 }
 						}
 					},
-					TotalDueWithInterest = 316,
-					TotalInterestDue = 16
+					TotalDuePlusInterest = 316,
+					TotalInterestDue = 16,
+					OriginalStatementValues = new List<CreditStatementsDto>
+					{
+						new CreditStatementsDto
+						{
+							AmountsOwedVisa = new List<decimal> { 100 },
+							AmountsOwedMC = new List<decimal> { 0 },
+							AmountsOwedDiscover = new List<decimal> { 100 }
+						},
+						new CreditStatementsDto
+						{
+							AmountsOwedVisa = new List<decimal> { 0 },
+							AmountsOwedMC = new List<decimal> { 100 },
+							AmountsOwedDiscover = new List<decimal> { 0 }
+						}
+					}
 				}
 			};
 			#endregion End Expected Data
 
 			// ACT
-			var actual = interestCalcService.GetCardInterests(people);
+			var actual = interestCalcService.GetCardInterests(people_2);
 
 			// ASSERT
 			actual.Should().BeEquivalentTo(expectedCase2);
@@ -143,45 +198,13 @@ namespace TestApplication.Test.Services
 		public void GetInterestCalcService_Returns_Case3Results()
 		{
 			// ARRANGE
-			#region Case 3 Parameter
-			IList<PersonDto> people = new List<PersonDto>
-			{
-				new PersonDto
-				{
-					Id = 3,
-					Wallets = new List<WalletsDto>
-					{
-						new WalletsDto
-						{
-							AmountsOwedVisa = new List<decimal> { 100 },
-							AmountsOwedMC = new List<decimal> { 100 },
-							AmountsOwedDiscover = new List<decimal> { 100 }
-						}
-					}
-				},
-				new PersonDto
-				{
-					Id = 4,
-					Wallets = new List<WalletsDto>
-					{
-						new WalletsDto
-						{
-							AmountsOwedVisa = new List<decimal> { 100 },
-							AmountsOwedMC = new List<decimal> { 100 },
-							AmountsOwedDiscover = new List<decimal> { 0 }
-						}
-					}
-				}
-			};
-			#endregion End Case 3 Parameter
-
 			#region Expected Data
 			IList<InterestSummaryDto> expectedCase3 = new List<InterestSummaryDto>
 			{
 				new InterestSummaryDto
 				{
 					PersonId = 3,
-					Wallets = new List<CardInterestsDto>
+					IndividualInterestDue = new List<CardInterestsDto>
 					{
 						new CardInterestsDto
 						{
@@ -190,13 +213,22 @@ namespace TestApplication.Test.Services
 							DiscoverInterest = new List<decimal> { 1 }
 						}
 					},
-					TotalDueWithInterest = 316,
-					TotalInterestDue = 16
+					TotalDuePlusInterest = 316,
+					TotalInterestDue = 16,
+					OriginalStatementValues = new List<CreditStatementsDto>
+					{
+						new CreditStatementsDto
+						{
+							AmountsOwedVisa = new List<decimal> { 100 },
+							AmountsOwedMC = new List<decimal> { 100 },
+							AmountsOwedDiscover = new List<decimal> { 100 }
+						}
+					}
 				},
 				new InterestSummaryDto
 				{
 					PersonId = 4,
-					Wallets = new List<CardInterestsDto>
+					IndividualInterestDue = new List<CardInterestsDto>
 					{
 						new CardInterestsDto
 						{
@@ -205,14 +237,23 @@ namespace TestApplication.Test.Services
 							DiscoverInterest = new List<decimal> { 0 }
 						}
 					},
-					TotalDueWithInterest = 215,
-					TotalInterestDue = 15
+					TotalDuePlusInterest = 215,
+					TotalInterestDue = 15,
+					OriginalStatementValues = new List<CreditStatementsDto>
+					{
+						new CreditStatementsDto
+						{
+							AmountsOwedVisa = new List<decimal> { 100 },
+							AmountsOwedMC = new List<decimal> { 100 },
+							AmountsOwedDiscover = new List<decimal> { 0 }
+						}
+					}
 				}
 			};
 			#endregion End Expected Data
 
 			// ACT
-			var actual = interestCalcService.GetCardInterests(people);
+			var actual = interestCalcService.GetCardInterests(people_3);
 
 			// ASSERT
 			actual.Should().BeEquivalentTo(expectedCase3);

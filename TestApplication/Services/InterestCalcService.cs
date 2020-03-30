@@ -14,7 +14,7 @@ namespace TestApplication.Services
 		public InterestCalcService()
 		{ }
 
-		public IList<InterestSummaryDto> GetCardInterests(IList<PersonDto> people)
+		public IList<InterestSummaryDto> GetCardInterests(List<PersonDto> people)
 		{
 			IList<InterestSummaryDto> cardInterestSummaries = new List<InterestSummaryDto>();
 
@@ -24,20 +24,24 @@ namespace TestApplication.Services
 				{
 					PersonId = person.Id
 				};
-				IList<CardInterestsDto> walletInterestTotal = new List<CardInterestsDto>();
-				foreach (WalletsDto wallet in person.Wallets)
+				List<CardInterestsDto> creditInterestTotal = new List<CardInterestsDto>();
+				foreach (CreditStatementsDto creditStatement in person.CreditStatements)
 				{
 					CardInterestsDto interestForWallet = new CardInterestsDto
 					{
-						VisaInterest = GetInterest(wallet.AmountsOwedVisa, VisaInterestRate),
-						MCInterest = GetInterest(wallet.AmountsOwedMC, MCInterestRate),
-						DiscoverInterest = GetInterest(wallet.AmountsOwedDiscover, DiscoverInterestRate)
+						VisaInterest = GetInterest(creditStatement.AmountsOwedVisa, VisaInterestRate),
+						MCInterest = GetInterest(creditStatement.AmountsOwedMC, MCInterestRate),
+						DiscoverInterest = GetInterest(creditStatement.AmountsOwedDiscover, DiscoverInterestRate)
 					};
-					walletInterestTotal.Add(interestForWallet);
-					cardInterestSummary.TotalDueWithInterest = GetTotalOwed(interestForWallet, wallet, cardInterestSummary.TotalDueWithInterest);
-					cardInterestSummary.TotalInterestDue = interestForWallet.VisaInterest.Sum() + interestForWallet.MCInterest.Sum() + interestForWallet.DiscoverInterest.Sum() + cardInterestSummary.TotalInterestDue;
+					creditInterestTotal.Add(interestForWallet);
+					cardInterestSummary.TotalDuePlusInterest = GetTotalOwed(interestForWallet, creditStatement, cardInterestSummary.TotalDuePlusInterest);
+					cardInterestSummary.TotalInterestDue = interestForWallet.VisaInterest.Sum() + 
+														   interestForWallet.MCInterest.Sum() + 
+														   interestForWallet.DiscoverInterest.Sum() + 
+														   cardInterestSummary.TotalInterestDue;
 				}
-				cardInterestSummary.Wallets = walletInterestTotal;
+				cardInterestSummary.OriginalStatementValues = person.CreditStatements;
+				cardInterestSummary.IndividualInterestDue = creditInterestTotal;
 				cardInterestSummaries.Add(cardInterestSummary);
 			}
 
@@ -61,11 +65,11 @@ namespace TestApplication.Services
 			return interest;
 		}
 
-		private static decimal GetTotalOwed(CardInterestsDto interestForWallet, WalletsDto wallet, decimal totalDueWithInterest)
+		private static decimal GetTotalOwed(CardInterestsDto interestForStatement, CreditStatementsDto creditStatement, decimal totalDueWithInterest)
 		{
-			return interestForWallet.VisaInterest.Sum() + interestForWallet.MCInterest.Sum() +
-			interestForWallet.DiscoverInterest.Sum() + totalDueWithInterest +
-			wallet.AmountsOwedDiscover.Sum() + wallet.AmountsOwedVisa.Sum() + wallet.AmountsOwedMC.Sum();
+			return interestForStatement.VisaInterest.Sum() + interestForStatement.MCInterest.Sum() +
+			interestForStatement.DiscoverInterest.Sum() + totalDueWithInterest +
+			creditStatement.AmountsOwedDiscover.Sum() + creditStatement.AmountsOwedVisa.Sum() + creditStatement.AmountsOwedMC.Sum();
 		}
 	}
 }

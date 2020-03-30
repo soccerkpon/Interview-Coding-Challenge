@@ -9,6 +9,6 @@ namespace TestApplication.Services
 {
 	public interface IInterestCalcService
 	{
-		IList<InterestSummaryDto> GetCardInterests(IList<PersonDto> people);
+		IList<InterestSummaryDto> GetCardInterests(List<PersonDto> people);
 	}
 }
