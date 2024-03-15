@@ -1,102 +1,74 @@
-﻿using System;
+﻿using FluentAssertions;
 using System.Collections.Generic;
-using FluentAssertions;
-using System.Text;
-using Xunit;
-using Moq;
-using TestApplication.Services;
 using TestApplication.DTOs.IncommingDTOs;
 using TestApplication.DTOs.OutgoingDTOs;
-using TestApplication.Models.DTOs.OutgoingDTOs;
+using TestApplication.Services;
+using Xunit;
 
 namespace TestApplication.Test.Services
 {
 	public class InterestCalcServiceTest
 	{
 		// Global contants, fields, mocks
-		readonly Mock<IInterestCalcService> _mockIInterestCalcService;
 		private readonly InterestCalcService interestCalcService;
 
-		// Data Factory
-		#region Case 1 Parameter
-		private readonly List<PersonDto> people_1 = new List<PersonDto>
+        #region Test Data
+        // Data Factory
+        #region Case 1 Parameter
+        private readonly PersonDto person_1 = new()
+        {
+			Id = 1,
+			CreditStatement = new()
 			{
-				new PersonDto
-				{
-					Id = 1,
-					CreditStatements = new List<CreditStatementsDto>
-					{
-						new CreditStatementsDto
-						{
-							AmountsOwedVisa = new List<decimal> { 100 },
-							AmountsOwedMC = new List<decimal> { 100 },
-							AmountsOwedDiscover = new List<decimal> { 100 }
-						}
-					}
-				}
-			};
+                OutstandingVisaBalance = 100,
+                OutstandingMasterCardBalance = 100,
+                OutstandingDiscoverBalance = 100
+			}
+		};
 		#endregion End Case 1 Parameter
 
 		#region Case 2 Parameter
-		private readonly List<PersonDto> people_2 = new List<PersonDto>
+		private readonly PersonDto person_2 = new()
+		{ 
+			Id = 2,
+			CreditStatement = new()
 			{
-				new PersonDto
-				{
-					Id = 2,
-					CreditStatements = new List<CreditStatementsDto>
-					{
-						new CreditStatementsDto
-						{
-							AmountsOwedVisa = new List<decimal> { 100 },
-							AmountsOwedMC = new List<decimal> { 0 },
-							AmountsOwedDiscover = new List<decimal> { 100 }
-						},
-						new CreditStatementsDto
-						{
-							AmountsOwedVisa = new List<decimal> { 0 },
-							AmountsOwedMC = new List<decimal> { 100 },
-							AmountsOwedDiscover = new List<decimal> { 0 }
-						}
-					}
-				}
-			};
+				OutstandingVisaBalance = 100,
+				OutstandingMasterCardBalance = 0,
+				OutstandingDiscoverBalance = 100
+			}
+		};
 		#endregion End Case 2 Parameter
 
 		#region Case 3 Parameter
-		private readonly List<PersonDto> people_3 = new List<PersonDto>
-			{
-				new PersonDto
-				{
-					Id = 3,
-					CreditStatements = new List<CreditStatementsDto>
-					{
-						new CreditStatementsDto
-						{
-							AmountsOwedVisa = new List<decimal> { 100 },
-							AmountsOwedMC = new List<decimal> { 100 },
-							AmountsOwedDiscover = new List<decimal> { 100 }
-						}
-					}
-				},
-				new PersonDto
-				{
-					Id = 4,
-					CreditStatements = new List<CreditStatementsDto>
-					{
-						new CreditStatementsDto
-						{
-							AmountsOwedVisa = new List<decimal> { 100 },
-							AmountsOwedMC = new List<decimal> { 100 },
-							AmountsOwedDiscover = new List<decimal> { 0 }
-						}
-					}
-				}
-			};
-		#endregion End Case 3 Parameter
-
-		public InterestCalcServiceTest()
+		private readonly PersonDto person_3 = new()
 		{
-			_mockIInterestCalcService = new Mock<IInterestCalcService>();
+			Id = 3,
+			CreditStatement = new()
+			{
+                OutstandingVisaBalance = 1000,
+                OutstandingMasterCardBalance = 87,
+                OutstandingDiscoverBalance = 10
+			}
+		};
+        #endregion End Case 3 Parameter
+
+        #region Case 4 Parameter
+        private readonly PersonDto person_4 = new()
+        {
+            Id = 4,
+            CreditStatement = new()
+            {
+                OutstandingVisaBalance = 0,
+                OutstandingMasterCardBalance = -13,
+                OutstandingDiscoverBalance = 6753
+            }
+        };
+        #endregion End Case 4 Parameter
+        #endregion Test Data
+
+        public InterestCalcServiceTest()
+		{
 			interestCalcService = new InterestCalcService();
 		}
 
@@ -105,158 +77,155 @@ namespace TestApplication.Test.Services
 		{
 			// ARRANGE
 			#region Expected Data
-			IList<InterestSummaryDto> expectedCase1 = new List<InterestSummaryDto>
+			StatementDto expectedStatementDto = new()
 			{
-				new InterestSummaryDto
+				PersonId = 1,
+				RemainingBalanceByCard = new()
 				{
-					PersonId = 1,
-					IndividualInterestDue = new List<CardInterestsDto>
-					{
-						new CardInterestsDto
-						{
-							VisaInterest = new List<decimal> { 10 },
-							MCInterest = new List<decimal> { 5 },
-							DiscoverInterest = new List<decimal> { 1 }
-						}
-					},
-					TotalDuePlusInterest = 316,
-					TotalInterestDue = 16,
-					OriginalStatementValues = new List<CreditStatementsDto>
-					{
-						new CreditStatementsDto
-						{
-							AmountsOwedVisa = new List<decimal> { 100 },
-							AmountsOwedMC = new List<decimal> { 100 },
-							AmountsOwedDiscover = new List<decimal> { 100 }
-						}
-					}
-				}
+					VisaAmountOwed = 100,
+					MasterCardAmountOwed = 100,
+					DiscoverAmountOwed = 100
+				},
+				InterestByCard = new()
+				{
+                    VisaAmountOwed = 10,
+                    MasterCardAmountOwed = 5,
+                    DiscoverAmountOwed = 1
+                },
+				BalancePlusInterestByCard = new()
+				{
+					VisaAmountOwed = 110,
+					MasterCardAmountOwed = 105,
+					DiscoverAmountOwed = 101
+				},
+				TotalBalanceAllCards = 300,
+				TotalInterestAllCards = 16,
+				TotalBalancePlusInterestAllCards = 316
 			};
 			#endregion End Expected Data
 
 			// ACT
-			var actual = interestCalcService.GetCardInterests(people_1);
+			var actual = interestCalcService.GetInterestOwedOnCustomerCreditCardsByPerson(person_1);
 
 			// ASSERT
-			actual.Should().BeEquivalentTo(expectedCase1);
+			actual.Should().BeEquivalentTo(expectedStatementDto);
 		}
 
 		[Fact]
 		public void GetInterestCalcService_Returns_Case2Results()
 		{
-			// ARRANGE
-			#region Expected Data
-			IList<InterestSummaryDto> expectedCase2 = new List<InterestSummaryDto>
-			{
-				new InterestSummaryDto
-				{
-					PersonId = 2,
-					IndividualInterestDue = new List<CardInterestsDto>
-					{
-						new CardInterestsDto
-						{
-							VisaInterest = new List<decimal> { 10 },
-							MCInterest = new List<decimal> { 0 },
-							DiscoverInterest = new List<decimal> { 1 }
-						},
-						new CardInterestsDto
-						{
-							VisaInterest = new List<decimal> { 0 },
-							MCInterest = new List<decimal> { 5 },
-							DiscoverInterest = new List<decimal> { 0 }
-						}
-					},
-					TotalDuePlusInterest = 316,
-					TotalInterestDue = 16,
-					OriginalStatementValues = new List<CreditStatementsDto>
-					{
-						new CreditStatementsDto
-						{
-							AmountsOwedVisa = new List<decimal> { 100 },
-							AmountsOwedMC = new List<decimal> { 0 },
-							AmountsOwedDiscover = new List<decimal> { 100 }
-						},
-						new CreditStatementsDto
-						{
-							AmountsOwedVisa = new List<decimal> { 0 },
-							AmountsOwedMC = new List<decimal> { 100 },
-							AmountsOwedDiscover = new List<decimal> { 0 }
-						}
-					}
-				}
-			};
-			#endregion End Expected Data
+            // ARRANGE
+            #region Expected Data
+            StatementDto expectedStatementDto = new()
+            {
+                PersonId = 2,
+                RemainingBalanceByCard = new()
+                {
+                    VisaAmountOwed = 100,
+                    MasterCardAmountOwed = 0,
+                    DiscoverAmountOwed = 100
+                },
+                InterestByCard = new()
+                {
+                    VisaAmountOwed = 10,
+                    MasterCardAmountOwed = 0,
+                    DiscoverAmountOwed = 1
+                },
+                BalancePlusInterestByCard = new()
+                {
+                    VisaAmountOwed = 110,
+                    MasterCardAmountOwed = 0,
+                    DiscoverAmountOwed = 101
+                },
+                TotalBalanceAllCards = 200,
+                TotalInterestAllCards = 11,
+                TotalBalancePlusInterestAllCards = 211
+            };
+            #endregion End Expected Data
 
-			// ACT
-			var actual = interestCalcService.GetCardInterests(people_2);
+            // ACT
+            var actual = interestCalcService.GetInterestOwedOnCustomerCreditCardsByPerson(person_2);
 
 			// ASSERT
-			actual.Should().BeEquivalentTo(expectedCase2);
+			actual.Should().BeEquivalentTo(expectedStatementDto);
 		}
 
 		[Fact]
 		public void GetInterestCalcService_Returns_Case3Results()
 		{
-			// ARRANGE
-			#region Expected Data
-			IList<InterestSummaryDto> expectedCase3 = new List<InterestSummaryDto>
-			{
-				new InterestSummaryDto
-				{
-					PersonId = 3,
-					IndividualInterestDue = new List<CardInterestsDto>
-					{
-						new CardInterestsDto
-						{
-							VisaInterest = new List<decimal> { 10 },
-							MCInterest = new List<decimal> { 5 },
-							DiscoverInterest = new List<decimal> { 1 }
-						}
-					},
-					TotalDuePlusInterest = 316,
-					TotalInterestDue = 16,
-					OriginalStatementValues = new List<CreditStatementsDto>
-					{
-						new CreditStatementsDto
-						{
-							AmountsOwedVisa = new List<decimal> { 100 },
-							AmountsOwedMC = new List<decimal> { 100 },
-							AmountsOwedDiscover = new List<decimal> { 100 }
-						}
-					}
-				},
-				new InterestSummaryDto
-				{
-					PersonId = 4,
-					IndividualInterestDue = new List<CardInterestsDto>
-					{
-						new CardInterestsDto
-						{
-							VisaInterest = new List<decimal> { 10 },
-							MCInterest = new List<decimal> { 5 },
-							DiscoverInterest = new List<decimal> { 0 }
-						}
-					},
-					TotalDuePlusInterest = 215,
-					TotalInterestDue = 15,
-					OriginalStatementValues = new List<CreditStatementsDto>
-					{
-						new CreditStatementsDto
-						{
-							AmountsOwedVisa = new List<decimal> { 100 },
-							AmountsOwedMC = new List<decimal> { 100 },
-							AmountsOwedDiscover = new List<decimal> { 0 }
-						}
-					}
-				}
-			};
-			#endregion End Expected Data
+            // ARRANGE
+            #region Expected Data
+            StatementDto expectedStatementDto = new()
+            {
+                PersonId = 3,
+                RemainingBalanceByCard = new()
+                {
+                    VisaAmountOwed = 1000,
+                    MasterCardAmountOwed = 87,
+                    DiscoverAmountOwed = 10
+                },
+                InterestByCard = new()
+                {
+                    VisaAmountOwed = 100,
+                    MasterCardAmountOwed = 4.35M,
+                    DiscoverAmountOwed = 0.10M
+                },
+                BalancePlusInterestByCard = new()
+                {
+                    VisaAmountOwed = 1100,
+                    MasterCardAmountOwed = 91.35M,
+                    DiscoverAmountOwed = 10.1M
+                },
+                TotalBalanceAllCards = 1097,
+                TotalInterestAllCards = 104.45M,
+                TotalBalancePlusInterestAllCards = 1201.45M
+            };
+            #endregion End Expected Data
 
-			// ACT
-			var actual = interestCalcService.GetCardInterests(people_3);
+            // ACT
+            var actual = interestCalcService.GetInterestOwedOnCustomerCreditCardsByPerson(person_3);
 
 			// ASSERT
-			actual.Should().BeEquivalentTo(expectedCase3);
+			actual.Should().BeEquivalentTo(expectedStatementDto);
 		}
-	}
+
+        [Fact]
+        public void GetInterestCalcService_Returns_Case4Results()
+        {
+            // ARRANGE
+            #region Expected Data
+            StatementDto expectedStatementDto = new()
+            {
+                PersonId = 4,
+                RemainingBalanceByCard = new()
+                {
+                    VisaAmountOwed = 0,
+                    MasterCardAmountOwed = -13,
+                    DiscoverAmountOwed = 6753
+                },
+                InterestByCard = new()
+                {
+                    VisaAmountOwed = 0,
+                    MasterCardAmountOwed = 0,
+                    DiscoverAmountOwed = 67.53M
+                },
+                BalancePlusInterestByCard = new()
+                {
+                    VisaAmountOwed = 0,
+                    MasterCardAmountOwed = -13M,
+                    DiscoverAmountOwed = 6820.53M
+                },
+                TotalBalanceAllCards = 6740M,
+                TotalInterestAllCards = 67.53M,
+                TotalBalancePlusInterestAllCards = 6807.53M
+            };
+            #endregion End Expected Data
+
+            // ACT
+            var actual = interestCalcService.GetInterestOwedOnCustomerCreditCardsByPerson(person_4);
+
+            // ASSERT
+            actual.Should().BeEquivalentTo(expectedStatementDto);
+        }
+    }
 }

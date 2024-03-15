@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TestApplication.DTOs.IncommingDTOs;
 using TestApplication.Services;
@@ -21,16 +19,25 @@ namespace TestApplication.Controllers
         }
 
         [HttpPost("calcInterest", Name = "CalculateInterest")]
-        public IActionResult GetInterestValues([FromBody] List<PersonDto> people)
+        public IActionResult GetInterestValues([FromBody] PersonDto people)
         {
             try
             {
-                return Ok(_interestCalcService.GetCardInterests(people));
+                return Ok(_interestCalcService.GetInterestOwedOnCustomerCreditCardsByPerson(people));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
+
+        // Basic
+        // Write an HTTP GET endpoint to return the interest for a single card passing amount owed and using the correct interest rate defined in the service.
+
+        // Intermediate
+        // Modify the existing HTTP endpoint or write a new one that takes a payment amount by card to be subtracted from the statement balance before calculating the interest.
+
+        // Advanced
+        // Incorporate dates and fees into the service that checks if customer's last payment was over 30 days ago and adds a $10 fee to the interest owed.
     }
 }

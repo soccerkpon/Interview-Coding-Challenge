@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace TestApplication.DTOs.IncommingDTOs
+﻿namespace TestApplication.DTOs.IncommingDTOs
 {
-	public class CreditStatementsDto
+	public class CreditStatementDto
 	{
-		public List<decimal> AmountsOwedVisa { get; set; }
-		public List<decimal> AmountsOwedMC { get; set; }
-		public List<decimal> AmountsOwedDiscover { get; set; }
+		public decimal OutstandingVisaBalance { get; set; }
+		public decimal OutstandingMasterCardBalance { get; set; }
+		public decimal OutstandingDiscoverBalance { get; set; }
 	}
 }

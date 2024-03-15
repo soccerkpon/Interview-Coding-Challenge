@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using TestApplication.DTOs.OutgoingDTOs;
 using TestApplication.DTOs.IncommingDTOs;
 
@@ -9,6 +6,6 @@ namespace TestApplication.Services
 {
 	public interface IInterestCalcService
 	{
-		IList<InterestSummaryDto> GetCardInterests(List<PersonDto> people);
+		StatementDto GetInterestOwedOnCustomerCreditCardsByPerson(PersonDto people);
 	}
 }
