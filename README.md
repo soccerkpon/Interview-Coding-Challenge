@@ -13,4 +13,3 @@ Modify the existing HTTP POST endpoint or write a new one that takes a payment a
 
 ### Advanced 
 Incorporate dates and fees into the service that checks if customer's last payment was over 30 days ago and adds a $10 fee to the interest owed.
-Inside of the controller there are three coding challenges defined. One for beginners, one for intermediate, and one advanced. This is designed to be used for interviews.
