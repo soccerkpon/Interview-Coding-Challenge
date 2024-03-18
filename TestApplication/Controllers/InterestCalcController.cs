@@ -1,14 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TestApplication.DTOs.IncommingDTOs;
+using TestApplication.DTOs.OutgoingDTOs;
 using TestApplication.Services;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace TestApplication.Controllers
 {
-    [Route("api/interestcalc")]
+    [Route("api/[controller]")]
     public class InterestCalcController : Controller
     {
         private readonly IInterestCalcService _interestCalcService;
@@ -18,8 +19,12 @@ namespace TestApplication.Controllers
             _interestCalcService = interestCalcService;
         }
 
-        [HttpPost("calcInterest", Name = "CalculateInterest")]
-        public IActionResult GetInterestValues([FromBody] PersonDto people)
+        [HttpPost]
+        [Route("Interest-By-Person")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<StatementDto> GetInterestValues([FromBody] PersonDto people)
         {
             try
             {

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
-    <OutputType>Library</OutputType>
+    <OutputType>WinExe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
