@@ -30,14 +30,5 @@ namespace TestApplication.Controllers
                 throw;
             }
         }
-
-        // Basic
-        // Write an HTTP GET endpoint to return the interest for a single card passing amount owed and using the correct interest rate defined in the service.
-
-        // Intermediate
-        // Modify the existing HTTP endpoint or write a new one that takes a payment amount by card to be subtracted from the statement balance before calculating the interest.
-
-        // Advanced
-        // Incorporate dates and fees into the service that checks if customer's last payment was over 30 days ago and adds a $10 fee to the interest owed.
     }
 }
