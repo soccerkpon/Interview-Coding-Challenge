@@ -9,4 +9,4 @@ CODING CHALLENGES:
  
 2. Modify the existing HTTP POST endpoint or write a new one that takes a payment amount by card to be subtracted from the statement balance before calculating the interest.
 
-3. Incorporate dates and fees into the service that checks if customer's last payment was over 30 days ago and adds a $10 fee to the interest owed.
+3. Modify the existing HTTP POST endpoint to incorporate dates and fees into the service that checks if customer's last payment was over 30 days ago and adds a $10 fee to the interest owed.
