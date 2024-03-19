@@ -13,12 +13,7 @@ namespace TestApplication
 		// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddMvc(setupAction =>
-			{
-				setupAction.ReturnHttpNotAcceptable = true;
-				setupAction.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
-			});
-
+			services.AddControllers();
 			services.AddSwaggerGen(c =>
 			{
 				c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "My API V1", Version = "v1" });
@@ -29,6 +24,11 @@ namespace TestApplication
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
+			app.UseRouting();
+			app.UseEndpoints(endpoints =>
+			{
+				endpoints.MapControllers();
+			});
 			if (env.IsDevelopment())
 			{
 				app.UseDeveloperExceptionPage();

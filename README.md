@@ -5,11 +5,8 @@ It consists of one controller with a swagger endpoint to calculate interest for 
 
 CODING CHALLENGES:
 
-### Basic 
-Write an HTTP GET endpoint to return the interest for a single card passing amount owed and using the correct interest rate defined in the service.
+1. Write an HTTP GET endpoint to return the interest for a single card passing amount owed and using the correct interest rate defined in the service.
+ 
+2. Modify the existing HTTP POST endpoint or write a new one that takes a payment amount by card to be subtracted from the statement balance before calculating the interest.
 
-### Intermediate 
-Modify the existing HTTP POST endpoint or write a new one that takes a payment amount by card to be subtracted from the statement balance before calculating the interest.
-
-### Advanced 
-Incorporate dates and fees into the service that checks if customer's last payment was over 30 days ago and adds a $10 fee to the interest owed.
+3. Incorporate dates and fees into the service that checks if customer's last payment was over 30 days ago and adds a $10 fee to the interest owed.
