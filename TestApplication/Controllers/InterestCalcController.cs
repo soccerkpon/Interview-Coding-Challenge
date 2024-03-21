@@ -35,5 +35,23 @@ namespace TestApplication.Controllers
                 throw;
             }
         }
+
+
+        [HttpGet]
+        [Route("Interest-By-Card/{cardType}/{amountOwed}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<StatementDto> GetInterestValues(string cardType, int amountOwed)
+        {
+            try
+            {
+                return Ok(_interestCalcService.GetInterestOwedByCard(request));
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

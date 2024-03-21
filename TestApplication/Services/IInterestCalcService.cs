@@ -7,5 +7,7 @@ namespace TestApplication.Services
 	public interface IInterestCalcService
 	{
 		StatementDto GetInterestOwedOnCustomerCreditCardsByPerson(PersonDto people);
-	}
+		decimal GetInterestOwedByCard(CardInterestRequest request);
+
+    }
 }
