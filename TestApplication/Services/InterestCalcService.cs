@@ -58,6 +58,26 @@ namespace TestApplication.Services
             };
         }
 
+		public decimal GetInterestByCardType(string cardType, decimal amountOwed)
+		{
+			//todo: use switch
+			if (cardType == "visa")
+			{
+				return GetInterest(amountOwed, VisaInterestRate);
+			} else if(cardType == "mastercard")
+            {
+                return GetInterest(amountOwed, MasterCardInterestRate);
+
+            } else if(cardType == "discover")
+            {
+                return GetInterest(amountOwed, DiscoverInterestRate);
+
+            } else
+			{
+				throw new Exception("cardtype not supported");
+			}
+
+		}
         private static decimal GetInterest(decimal amountOwed, decimal interestRate)
 		{
 			return amountOwed > 0 ? amountOwed * (interestRate / 100) : 0;

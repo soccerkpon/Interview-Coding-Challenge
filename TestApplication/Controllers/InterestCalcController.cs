@@ -35,5 +35,18 @@ namespace TestApplication.Controllers
                 throw;
             }
         }
+
+        [HttpGet]
+        public ActionResult<StatementDto> GetInterestForSingleCreditCard([FromBody] string cardType, decimal amountOwed)
+        {
+            try
+            {
+                return Ok(_interestCalcService.GetInterestByCardType(cardType, amountOwed));
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }
