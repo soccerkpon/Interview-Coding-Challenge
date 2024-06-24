@@ -26,7 +26,7 @@ namespace TestApplication.Services
 		                	MasterCardAmountOwed = person.CreditStatement.OutstandingMasterCardBalance,
 		                	DiscoverAmountOwed = person.CreditStatement.OutstandingDiscoverBalance
 				}
-            	};
+            		};
 
 			RemainingAmountsDto interestsByCard = new()
 			{
