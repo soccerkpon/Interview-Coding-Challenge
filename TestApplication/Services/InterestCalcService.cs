@@ -19,20 +19,20 @@ namespace TestApplication.Services
 		{
 			StatementDto statementDto = new()
 			{
-                PersonId = person.Id,
+                		PersonId = person.Id,
 				RemainingBalanceByCard = new RemainingAmountsDto() 
 				{
 					VisaAmountOwed = person.CreditStatement.OutstandingVisaBalance,
-                    MasterCardAmountOwed = person.CreditStatement.OutstandingMasterCardBalance,
-                    DiscoverAmountOwed = person.CreditStatement.OutstandingDiscoverBalance
+		                	MasterCardAmountOwed = person.CreditStatement.OutstandingMasterCardBalance,
+		                	DiscoverAmountOwed = person.CreditStatement.OutstandingDiscoverBalance
 				}
-            };
+            	};
 
 			RemainingAmountsDto interestsByCard = new()
 			{
 				VisaAmountOwed = GetInterest(person.CreditStatement.OutstandingVisaBalance, VisaInterestRate),
-                MasterCardAmountOwed = GetInterest(person.CreditStatement.OutstandingMasterCardBalance, MasterCardInterestRate),
-                DiscoverAmountOwed = GetInterest(person.CreditStatement.OutstandingDiscoverBalance, DiscoverInterestRate)
+                		MasterCardAmountOwed = GetInterest(person.CreditStatement.OutstandingMasterCardBalance, MasterCardInterestRate),
+                		DiscoverAmountOwed = GetInterest(person.CreditStatement.OutstandingDiscoverBalance, DiscoverInterestRate)
 			};
 			statementDto.InterestByCard = interestsByCard;
 			statementDto.BalancePlusInterestByCard = GetBalancePlusInterestByCard(interestsByCard, person.CreditStatement);
@@ -43,22 +43,22 @@ namespace TestApplication.Services
 			return statementDto;
 		}
 
-        private static decimal GetTotalsForAllCards(RemainingAmountsDto remainingAmounts)
-        {
-            return remainingAmounts.VisaAmountOwed + remainingAmounts.MasterCardAmountOwed + remainingAmounts.DiscoverAmountOwed;
-        }
-
-        private static RemainingAmountsDto GetBalancePlusInterestByCard(RemainingAmountsDto interestsByCard, CreditStatementDto creditStatement)
-        {
-            return new RemainingAmountsDto
-			{
-                VisaAmountOwed = interestsByCard.VisaAmountOwed + creditStatement.OutstandingVisaBalance,
-                MasterCardAmountOwed = interestsByCard.MasterCardAmountOwed + creditStatement.OutstandingMasterCardBalance,
-                DiscoverAmountOwed = interestsByCard.DiscoverAmountOwed + creditStatement.OutstandingDiscoverBalance
-            };
-        }
-
-        private static decimal GetInterest(decimal amountOwed, decimal interestRate)
+	        private static decimal GetTotalsForAllCards(RemainingAmountsDto remainingAmounts)
+	        {
+	            return remainingAmounts.VisaAmountOwed + remainingAmounts.MasterCardAmountOwed + remainingAmounts.DiscoverAmountOwed;
+	        }
+	
+	        private static RemainingAmountsDto GetBalancePlusInterestByCard(RemainingAmountsDto interestsByCard, CreditStatementDto creditStatement)
+	        {
+	            return new RemainingAmountsDto
+				{
+	                VisaAmountOwed = interestsByCard.VisaAmountOwed + creditStatement.OutstandingVisaBalance,
+	                MasterCardAmountOwed = interestsByCard.MasterCardAmountOwed + creditStatement.OutstandingMasterCardBalance,
+	                DiscoverAmountOwed = interestsByCard.DiscoverAmountOwed + creditStatement.OutstandingDiscoverBalance
+	            };
+	        }
+	
+	        private static decimal GetInterest(decimal amountOwed, decimal interestRate)
 		{
 			return amountOwed > 0 ? amountOwed * (interestRate / 100) : 0;
 		}
