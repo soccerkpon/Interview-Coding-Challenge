@@ -1,5 +1,5 @@
-# TestDrivenApplication
-This application was built using Test Driven techniques using .NET Core 7!
+# Interview Coding Challenge
+This application was intentionally designed to be simplistic, open to refactoring, and not fully implemented for the expansion of new features. There is room for the candidate to completely refactor portions of the application to meet the needs of each coding challenge below. It's up to the candidate to interpret the requirements and devise a solid plan for implementing each feature into the existing code.
 
 It consists of one controller with a swagger endpoint to calculate interest for 1 person that has up to 3 different credit cards. There are 4 scenarios defined in the unit tests that provide good examples for testing the controller. The controller calls the interface wich in turn calls the service to calculate the simple interest.
 
