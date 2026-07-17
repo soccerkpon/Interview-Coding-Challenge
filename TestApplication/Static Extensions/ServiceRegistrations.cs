@@ -11,7 +11,8 @@ namespace TestApplication.Static_Extensions
     {
         public static void Register(IServiceCollection services)
         {
-            services.AddTransient<IInterestCalcService, InterestCalcService>();
+            services.AddTransient<IMaterialCostService, MaterialCostService>();
+            services.AddTransient<ISawWasteService, SawWasteService>();
         }
     }
 }

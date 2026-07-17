@@ -1,34 +1,32 @@
-﻿using System;
+using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TestApplication.DTOs.IncommingDTOs;
 using TestApplication.DTOs.OutgoingDTOs;
 using TestApplication.Services;
 
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace TestApplication.Controllers
 {
     [Route("api/[controller]")]
-    public class InterestCalcController : Controller
+    public class SawWasteController : Controller
     {
-        private readonly IInterestCalcService _interestCalcService;
+        private readonly ISawWasteService _sawWasteService;
 
-        public InterestCalcController(IInterestCalcService interestCalcService)
+        public SawWasteController(ISawWasteService sawWasteService)
         {
-            _interestCalcService = interestCalcService;
+            _sawWasteService = sawWasteService;
         }
 
         [HttpPost]
-        [Route("Interest-By-Person")]
+        [Route("calculate")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<StatementDto> GetInterestValues([FromBody] PersonDto people)
+        public ActionResult<SawWasteResponseDto> Calculate([FromBody] SawWasteRequestDto request)
         {
             try
             {
-                return Ok(_interestCalcService.GetInterestOwedOnCustomerCreditCardsByPerson(people));
+                return Ok(_sawWasteService.CalculateSawWaste(request));
             }
             catch (Exception)
             {
