@@ -1,24 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using TestApplication.Static_Extensions;
 
-namespace TestApplication
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddControllers();
+builder.Services.AddSwaggerGen(c =>
 {
-	public class Program
-	{
-		public static void Main(string[] args)
-		{
-			CreateWebHostBuilder(args).Build().Run();
-		}
+	c.SwaggerDoc("v1", new Microsoft.OpenApi.OpenApiInfo { Title = "My API V1", Version = "v1" });
+});
+ServiceRegistrations.Register(builder.Services);
 
-		public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-			WebHost.CreateDefaultBuilder(args)
-				.UseStartup<Startup>();
-	}
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+	app.UseDeveloperExceptionPage();
 }
+else
+{
+	app.UseHsts();
+}
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+	c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+});
+
+app.UseHttpsRedirection();
+
+app.MapControllers();
+
+app.Run();

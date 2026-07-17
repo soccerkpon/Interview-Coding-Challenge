@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿using AwesomeAssertions;
 using System.Collections.Generic;
 using TestApplication.DTOs.IncommingDTOs;
 using TestApplication.DTOs.OutgoingDTOs;
@@ -9,7 +9,7 @@ namespace TestApplication.Test.Services
 {
 	public class InterestCalcServiceTest
 	{
-		// Global contants, fields, mocks
+		// Global constants, fields, mocks
 		private readonly InterestCalcService interestCalcService;
 
         #region Test Data
